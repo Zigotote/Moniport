@@ -1,0 +1,6 @@
+{
+  "adressBroker": "localhost",
+  "portBroker": "1883",
+  "levelQos": 1,
+  "idClient": 0
+}
