@@ -20,7 +20,7 @@ type configuration struct {
 func main() {
 	//Lecture de l'adresse du fichier de config => lancer "go run <adresse-main.go> -config <adresse-config.json>
 	configFilename := getArgConfig()
-	fmt.Println(configFilename)
+	fmt.Println("configFilename : ", configFilename)
 
 	//Lecture du fichier de configuration
 	config := readConfiguration(configFilename)
