@@ -15,16 +15,17 @@ type measure struct {
 }
 
 func main() {
+
+	var sampleMeasure measure = measure{"1", "ENF", "wind", 50, "2019-12-10-15-11-25"}
+
 	redis.Connect()
-	redis.SendData("test", "yes")
-	for i := 0; i <= 10; i++ {
-		fmt.Println(getNewIdMeasure())
-	}
+	sendMeasure(sampleMeasure)
+	// redis.SendData("test", "yes")
 	defer redis.CloseConnection()
 }
 
 func sendMeasure(m measure) {
-	setKey := m.idAirport + ":" + m.measureType
+	// setKey := m.idAirport + ":" + m.measureType
 
 	fmt.Println(getTimestampFromDate(m.date))
 }
@@ -39,7 +40,7 @@ func getNewIdMeasure() int {
 	return redis.GetDataInt("currIdMeasure")
 }
 
-func getTimestampFromDate(date string) int {
+func getTimestampFromDate(date string) int64 {
 	layout := "2006-01-02-15-04-05"
 
 	t, err := time.Parse(layout, date)
