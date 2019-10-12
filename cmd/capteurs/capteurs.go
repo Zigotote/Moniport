@@ -4,14 +4,15 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"os"
 )
 
 type configuration struct {
-	adressBroker string
-	portBroker   string
-	levelQos     int
-	idClient     string
+	AdressBroker string `json:"adressBroker"`
+	PortBroker   string `json:"portBroker"`
+	LevelQos     int    `json:"levelQos"`
+	IDClient     int    `json:"idClient"`
 }
 
 func main() {
@@ -27,24 +28,27 @@ func main() {
 }
 
 func readConfiguration(filename string) configuration {
-
 	var _configuration configuration
 	//filename is the path to the json config file
 	file, err := os.Open(filename)
 	if err != nil {
-		fmt.Println("Error 1")
+		fmt.Println(err)
 		return _configuration
 	}
-	decoder := json.NewDecoder(file)
-	err = decoder.Decode(&_configuration)
+
+	byteValue, _ := ioutil.ReadAll(file)
+
+	json.Unmarshal(byteValue, &_configuration)
+
 	if err != nil {
-		fmt.Println("Error 2")
+		fmt.Println(err)
 		return _configuration
 	}
 
 	//TODO error handling
 
 	fmt.Println("file read")
-	fmt.Println(_configuration.adressBroker)
+
+	defer file.Close()
 	return _configuration
 }
