@@ -2,22 +2,31 @@ package main
 
 import (
 	"Moniport/cmd/mqtt"
+	"encoding/json"
+	"flag"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strconv"
 	"time"
-	"flag"
-	"os"
-	"encoding/json"
 )
 
 type configuration struct {
-	adressBroker string
-	portBroker   string
-	levelQos     int
-	idClient     string
+	AdressBroker string `json:"adressBroker"`
+	PortBroker   string `json:"portBroker"`
+	LevelQos     int    `json:"levelQos"`
+	IDClient     int    `json:"idClient"`
 }
 
 func main() {
+	//Lecture de l'adresse du fichier de config => lancer "go run <adresse-main.go> -config <adresse-config.json>
+	configFilename := getArgConfig()
+	fmt.Println("configFilename : ", configFilename)
+
+	//Lecture du fichier de configuration
+	config := readConfiguration(configFilename)
+	fmt.Println(config)
+
 	s1 := Sensor{
 		id:         001,
 		idAirport:  "NTE",
@@ -34,4 +43,35 @@ func main() {
 		c1.Publish("topic", s1.mqttQos, false, s1.GenerateMessage(time.Now()))
 	}
 
+}
+
+func getArgConfig() string {
+	var configFilename string
+	flag.StringVar(&configFilename, "config", "", "Usage")
+	flag.Parse()
+	return configFilename
+}
+
+func readConfiguration(filename string) configuration {
+
+	var _configuration configuration
+	//filename is the path to the json config file
+	file, err := os.Open(filename)
+	if err != nil {
+		fmt.Println(err)
+		return _configuration
+	}
+
+	byteValue, _ := ioutil.ReadAll(file)
+	json.Unmarshal(byteValue, &_configuration)
+
+	if err != nil {
+		fmt.Println(err)
+		return _configuration
+	}
+
+	//TODO error handling
+
+	fmt.Println("file read")
+	return _configuration
 }
