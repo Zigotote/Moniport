@@ -4,6 +4,8 @@ import (
 	"fmt"
 	redis "moniport/cmd/recepteur/redis"
 	"time"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 type measure struct {
@@ -21,6 +23,10 @@ func main() {
 	redis.Connect()
 	sampleMeasure.sendMeasure()
 	defer redis.CloseConnection()
+}
+
+var callbackFunction mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
+
 }
 
 func (m measure) sendMeasure() {
