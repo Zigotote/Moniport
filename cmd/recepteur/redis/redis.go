@@ -2,6 +2,7 @@ package redis
 
 import (
 	"fmt"
+	"strconv"
 
 	redigo "github.com/gomodule/redigo/redis"
 )
@@ -69,5 +70,30 @@ func IncrKey(key string) {
 		fmt.Println(err)
 	} else {
 		fmt.Println("Incr " + key)
+	}
+}
+
+func AddToSet(key string, value string) {
+	c := getConnection()
+	reply, err := redigo.Int(c.Do("SADD", key, value))
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		fmt.Println(reply)
+		if reply == 1 {
+			fmt.Println("Added " + value + " to Set " + key)
+		}
+	}
+}
+
+func AddToOrdSet(key string, value string, score int64) {
+	c := getConnection()
+	reply, err := redigo.Int(c.Do("ZADD", key, score, value))
+	if err != nil {
+		fmt.Println(err)
+	} else {
+		if reply == 1 {
+			fmt.Println("Added " + value + " to Ordered Set " + key + " with score " + strconv.FormatInt(score, 10))
+		}
 	}
 }

@@ -16,18 +16,23 @@ type measure struct {
 
 func main() {
 
-	var sampleMeasure measure = measure{"1", "ENF", "wind", 50, "2019-12-10-15-11-25"}
+	var sampleMeasure measure = measure{"1", "NON", "wind", 50, "2019-12-10-15-10-25"}
 
 	redis.Connect()
-	sendMeasure(sampleMeasure)
-	// redis.SendData("test", "yes")
+	sampleMeasure.sendMeasure()
 	defer redis.CloseConnection()
 }
 
-func sendMeasure(m measure) {
-	// setKey := m.idAirport + ":" + m.measureType
+func (m measure) sendMeasure() {
+	setKey := m.idAirport + ":" + m.measureType
 
-	fmt.Println(getTimestampFromDate(m.date))
+	redis.AddToSet("airports", m.idAirport)
+
+	setValue := fmt.Sprintf("%d_%.2f", getNewIdMeasure(), m.value)
+
+	setTimestamp := getTimestampFromDate(m.date)
+
+	redis.AddToOrdSet(setKey, setValue, setTimestamp)
 }
 
 func getNewIdMeasure() int {
