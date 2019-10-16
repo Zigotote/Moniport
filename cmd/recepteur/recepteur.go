@@ -12,46 +12,43 @@ import (
 )
 
 type measure struct {
-	idSensor    string
-	idAirport   string
-	measureType string
-	value       float64
-	date        string
+	IDSensor    string  `json:"idSensor"`
+	IDAirport   string  `json:"idAirport"`
+	MeasureType string  `json:"measure"`
+	Value       float64 `json:"value"`
+	Date        string  `json:"date"`
 }
 
 func main() {
-
+	redis.Connect()
 	//var sampleMeasure measure = measure{"1", "NON", "wind", 50, "2019-12-10-15-10-25"}
 	client := mqtt.Connect("tcp://localhost:1883", "my-subscriber")
 	for true {
-		client.Subscribe("recepteur-client", 2, callbackFunction)
+		client.Subscribe("airport_measures", 2, callbackFunction)
 	}
+	defer redis.CloseConnection()
 }
 
 var callbackFunction mymqtt.MessageHandler = func(client mymqtt.Client, msg mymqtt.Message) {
 
 	newMeasure := &measure{}
 	err := json.Unmarshal(msg.Payload(), newMeasure)
-
+	fmt.Println(*newMeasure)
 	if err != nil {
 		log.Fatal(err)
 	}
-	//realMeasure, _ := json.Marshal(newMeasure)
-	//fmt.Println(string(realMeasure))
-	//Connection à la base et sauvegarde
-	redis.Connect()
 	newMeasure.sendMeasure()
-	defer redis.CloseConnection()
+
 }
 
 func (m measure) sendMeasure() {
-	setKey := m.idAirport + ":" + m.measureType
+	setKey := m.IDAirport + ":" + m.MeasureType
 
-	redis.AddToSet("airports", m.idAirport)
+	redis.AddToSet("airports", m.IDAirport)
 
-	setValue := fmt.Sprintf("%d_%.2f", getNewIdMeasure(), m.value)
+	setValue := fmt.Sprintf("%d_%.2f", getNewIdMeasure(), m.Value)
 
-	setTimestamp := getTimestampFromDate(m.date)
+	setTimestamp := getTimestampFromDate(m.Date)
 
 	redis.AddToOrdSet(setKey, setValue, setTimestamp)
 }
