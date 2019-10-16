@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -40,9 +41,12 @@ func main() {
 
 	for range time.Tick(10 * time.Second) {
 		fmt.Printf("Envoi message...")
-		c1.Publish("topic", s1.mqttQos, false, s1.GenerateMessage(time.Now()))
+		out, err := json.Marshal(s1.GenerateMessage(time.Now()))
+		if err != nil {
+			log.Fatal(err)
+		}
+		c1.Publish("airport_measures", s1.mqttQos, false, out)
 	}
-
 }
 
 func getArgConfig() string {

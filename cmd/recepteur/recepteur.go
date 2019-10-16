@@ -24,7 +24,7 @@ func main() {
 	//var sampleMeasure measure = measure{"1", "NON", "wind", 50, "2019-12-10-15-10-25"}
 	client := mqtt.Connect("tcp://localhost:1883", "my-subscriber")
 	for true {
-		client.Subscribe("airport_measures", 2, callbackFunction)
+		client.Subscribe("airport_measures", 0, callbackFunction)
 	}
 	defer redis.CloseConnection()
 }
