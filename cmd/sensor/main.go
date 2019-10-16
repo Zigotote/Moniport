@@ -39,7 +39,7 @@ func main() {
 	c1 := mqtt.Connect(mqttAdress, strconv.Itoa(s1.id))
 
 	for range time.Tick(10 * time.Second) {
-		//fmt.Printf("Envoi message...")
+		fmt.Printf("Envoi message...")
 		c1.Publish("topic", s1.mqttQos, false, s1.GenerateMessage(time.Now()))
 	}
 
