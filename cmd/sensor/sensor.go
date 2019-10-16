@@ -2,6 +2,7 @@ package main
 
 import (
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -23,21 +24,25 @@ type Sensor struct {
 }
 
 type Message struct {
-	idSensor  int
-	idAirport string
-	measure   Measure
-	value     float32
-	date      time.Time
+	IDSensor    string  `json:"idSensor"`
+	IDAirport   string  `json:"idAirport"`
+	MeasureType Measure `json:"measure"`
+	Value       float32 `json:"value"`
+	Date        string  `json:"date"`
 }
 
 func (s Sensor) GenerateMessage(date time.Time) Message {
 	return Message{
-		idSensor:  s.id,
-		idAirport: s.idAirport,
-		measure:   s.measure,
-		value:     s.randValue(),
-		date:      date,
+		IDSensor:    strconv.Itoa(s.id),
+		IDAirport:   s.idAirport,
+		MeasureType: s.measure,
+		Value:       s.randValue(),
+		Date:        convertTimeToDate(date),
 	}
+}
+
+func convertTimeToDate(date time.Time) string {
+	return date.Format("2006-01-02-15-04-05")
 }
 
 func (s Sensor) randValue() float32 {
