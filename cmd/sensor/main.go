@@ -1,7 +1,7 @@
 package main
 
 import (
-	"Moniport/cmd/mqtt"
+	"Moniport/internal/helpers/mqtt"
 	"encoding/json"
 	"flag"
 	"fmt"

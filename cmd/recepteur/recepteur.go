@@ -1,9 +1,9 @@
 package main
 
 import (
-	mqtt "Moniport/cmd/mqtt"
-	redis "Moniport/cmd/recepteur/redis"
 	data "Moniport/internal/data"
+	mqtt "Moniport/internal/helpers/mqtt"
+	redis "Moniport/internal/helpers/redis"
 	"encoding/json"
 	"fmt"
 	"log"
