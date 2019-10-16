@@ -1,11 +1,14 @@
 package main
 
 import (
+	mqtt "Moniport/cmd/mqtt"
+	redis "Moniport/cmd/recepteur/redis"
+	"encoding/json"
 	"fmt"
-	redis "moniport/cmd/recepteur/redis"
+	"log"
 	"time"
 
-	mqtt "github.com/eclipse/paho.mqtt.golang"
+	mymqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
 type measure struct {
@@ -18,15 +21,27 @@ type measure struct {
 
 func main() {
 
-	var sampleMeasure measure = measure{"1", "NON", "wind", 50, "2019-12-10-15-10-25"}
-
-	redis.Connect()
-	sampleMeasure.sendMeasure()
-	defer redis.CloseConnection()
+	//var sampleMeasure measure = measure{"1", "NON", "wind", 50, "2019-12-10-15-10-25"}
+	client := mqtt.Connect("tcp://localhost:1883", "my-subscriber")
+	for true {
+		client.Subscribe("recepteur-client", 2, callbackFunction)
+	}
 }
 
-var callbackFunction mqtt.MessageHandler = func(client mqtt.Client, msg mqtt.Message) {
+var callbackFunction mymqtt.MessageHandler = func(client mymqtt.Client, msg mymqtt.Message) {
 
+	newMeasure := &measure{}
+	err := json.Unmarshal(msg.Payload(), newMeasure)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	//realMeasure, _ := json.Marshal(newMeasure)
+	//fmt.Println(string(realMeasure))
+	//Connection à la base et sauvegarde
+	redis.Connect()
+	newMeasure.sendMeasure()
+	defer redis.CloseConnection()
 }
 
 func (m measure) sendMeasure() {
