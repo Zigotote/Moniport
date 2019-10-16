@@ -1,6 +1,8 @@
 {
   "adressBroker": "localhost",
-  "portBroker": "1883",
+  "portBroker": 1883,
   "levelQos": 1,
-  "idClient": 0
+  "idSensor": 0, //0 à 2 inclu
+  "idAirport": "NTE"
+  //idClient sera formé à partir de idSensor et idAirport, format "idAirport:idSensor"
 }

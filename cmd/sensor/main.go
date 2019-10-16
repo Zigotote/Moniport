@@ -6,6 +6,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"strconv"
 	"time"
@@ -13,9 +14,10 @@ import (
 
 type configuration struct {
 	AdressBroker string `json:"adressBroker"`
-	PortBroker   string `json:"portBroker"`
-	LevelQos     int    `json:"levelQos"`
-	IDClient     int    `json:"idClient"`
+	PortBroker   int    `json:"portBroker"`
+	LevelQos     byte   `json:"levelQos"`
+	IDSensor     int    `json:"idSensor"`
+	IDAirport    string `json:"idAirport"`
 }
 
 func main() {
@@ -28,15 +30,15 @@ func main() {
 	fmt.Println(config)
 
 	s1 := Sensor{
-		id:         001,
-		idAirport:  "NTE",
-		measure:    TEMPERATURE,
-		mqttAdress: "localhost",
-		mqttPort:   1883,
-		mqttQos:    0,
+		id:         config.IDSensor,
+		idAirport:  config.IDAirport,
+		measure:    getMeasureType(config.IDSensor),
+		mqttAdress: config.AdressBroker,
+		mqttPort:   config.PortBroker,
+		mqttQos:    config.LevelQos,
 	}
 	mqttAdress := "tcp://" + s1.mqttAdress + ":" + strconv.Itoa(s1.mqttPort)
-	c1 := mqtt.Connect(mqttAdress, strconv.Itoa(s1.id))
+	c1 := mqtt.Connect(mqttAdress, s1.idAirport+":"+strconv.Itoa(s1.id))
 
 	for range time.Tick(10 * time.Second) {
 		fmt.Printf("Envoi message...")
@@ -58,20 +60,31 @@ func readConfiguration(filename string) configuration {
 	//filename is the path to the json config file
 	file, err := os.Open(filename)
 	if err != nil {
-		fmt.Println(err)
-		return _configuration
+		log.Fatal(err)
 	}
 
 	byteValue, _ := ioutil.ReadAll(file)
 	json.Unmarshal(byteValue, &_configuration)
 
 	if err != nil {
-		fmt.Println(err)
-		return _configuration
+		log.Fatal(err)
 	}
 
 	//TODO error handling
 
 	fmt.Println("file read")
 	return _configuration
+}
+
+func getMeasureType(id int) Measure {
+	switch id {
+	case 0:
+		return TEMPERATURE
+	case 1:
+		return PRESSURE
+	case 2:
+		return WIND
+	default:
+		return TEMPERATURE
+	}
 }
