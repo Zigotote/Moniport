@@ -3,6 +3,7 @@ package main
 import (
 	mqtt "Moniport/cmd/mqtt"
 	redis "Moniport/cmd/recepteur/redis"
+	data "Moniport/internal/data"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -10,14 +11,6 @@ import (
 
 	mymqtt "github.com/eclipse/paho.mqtt.golang"
 )
-
-type measure struct {
-	IDSensor    string  `json:"idSensor"`
-	IDAirport   string  `json:"idAirport"`
-	MeasureType string  `json:"measure"`
-	Value       float64 `json:"value"`
-	Date        string  `json:"date"`
-}
 
 func main() {
 	redis.Connect()
@@ -31,17 +24,17 @@ func main() {
 
 var callbackFunction mymqtt.MessageHandler = func(client mymqtt.Client, msg mymqtt.Message) {
 
-	newMeasure := &measure{}
-	err := json.Unmarshal(msg.Payload(), newMeasure)
-	fmt.Println(*newMeasure)
+	newMeasure := data.Measure{}
+	err := json.Unmarshal(msg.Payload(), &newMeasure)
+	fmt.Println(newMeasure)
 	if err != nil {
 		log.Fatal(err)
 	}
-	newMeasure.sendMeasure()
+	sendMeasure(newMeasure)
 
 }
 
-func (m measure) sendMeasure() {
+func sendMeasure(m data.Measure) {
 	setKey := m.IDAirport + ":" + m.MeasureType
 
 	redis.AddToSet("airports", m.IDAirport)
