@@ -1,4 +1,18 @@
-cd $GOPATH/src/Moniport/cmd/sensor
+cd $GOPATH/src/Moniport/cmd/recepteur
+
+# Lancement du recepteur
+
+echo Lancement du recepteur
+go build Moniport/cmd/recepteur
+if [ ! $? -eq 0 ]
+then
+    echo "Erreur lors du build du dossier recepteur"
+fi
+./recepteur &
+
+# Lancement des capteurs
+
+cd ../sensor
 go build Moniport/cmd/sensor
 
 if [ ! $? -eq 0 ]

@@ -41,7 +41,6 @@ func main() {
 	c1 := mqtt.Connect(mqttAdress, s1.idAirport+":"+strconv.Itoa(s1.id))
 
 	for range time.Tick(10 * time.Second) {
-		fmt.Printf("Envoi message...")
 		out, err := json.Marshal(s1.GenerateMessage(time.Now()))
 		if err != nil {
 			log.Fatal(err)
