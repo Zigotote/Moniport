@@ -31,6 +31,7 @@ func measureHandler(w http.ResponseWriter, r *http.Request) {
 		IDSensor:    "1",
 		IDAirport:   "NTE",
 	}
+	//voir pour convertir les timestamp en dates
 	writeJSON(w, resp)
 }
 
@@ -63,7 +64,9 @@ func avgMeasureHandler(w http.ResponseWriter, r *http.Request) {
 		IDSensor:    "3",
 		IDAirport:   "NTE",
 	}
-	writeJSON(w, []Message{temp, press, wind})
+	resp := []Message{temp, wind, press}
+	//voir pour convertir les timestamp en dates
+	writeJSON(w, resp)
 }
 
 func writeJSON(w http.ResponseWriter, data interface{}) {
