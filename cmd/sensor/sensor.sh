@@ -9,5 +9,6 @@ fi
 cd ..
 for config in config-files/*.json 
 do
-    ./sensor/sensor -config $GOPATH/src/Moniport/cmd/$config  &
+    echo Lancement du capteur configuré dans le fichier $config
+    ./sensor/sensor -config $GOPATH/src/Moniport/cmd/$config &
 done
