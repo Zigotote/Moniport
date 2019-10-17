@@ -2,13 +2,13 @@ cd $GOPATH/src/Moniport/cmd/recepteur
 
 # Lancement du recepteur
 
-echo Lancement du recepteur
 go build Moniport/cmd/recepteur
 if [ ! $? -eq 0 ]
 then
     echo "Erreur lors du build du dossier recepteur"
 fi
 ./recepteur &
+echo Lancement du récepteur sur le processus $!
 
 # Lancement des capteurs
 
@@ -23,6 +23,6 @@ fi
 cd ..
 for config in config-files/*.json 
 do
-    echo Lancement du capteur configuré dans le fichier $config
     ./sensor/sensor -config $GOPATH/src/Moniport/cmd/$config &
+    echo Lancement du capteur configuré dans le fichier $config : processus $!
 done
