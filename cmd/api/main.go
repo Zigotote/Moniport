@@ -6,19 +6,22 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/mux"
 )
 
 func main() {
-	http.HandleFunc("/measures", measureHandler)
-	http.HandleFunc("/measures/avg", avgMeasureHandler)
-	err := http.ListenAndServe(":8081", nil)
+	router := mux.NewRouter().StrictSlash(true)
+	router.HandleFunc("/measures/{start}/{end}", measureHandler)
+	router.HandleFunc("/avg-measures/{date}", avgMeasureHandler)
+	err := http.ListenAndServe(":8081", router)
 	log.Fatal(err)
 }
 
 func measureHandler(w http.ResponseWriter, r *http.Request) {
-	queryValues := r.URL.Query()
-	start := getTimestampFromDate(queryValues.Get("start"))
-	end := getTimestampFromDate(queryValues.Get("end"))
+	vars := mux.Vars(r)
+	start := getTimestampFromDate(vars["start"])
+	end := getTimestampFromDate(vars["end"])
 	if start < 0 || end < 0 {
 		fmt.Fprint(w, "Vous devez renseigner les paramètres start et end pour effectuer la requête. Ils doivent être au format YYYY-MM-DD-hh-mm-ss.")
 		return
@@ -36,8 +39,8 @@ func measureHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func avgMeasureHandler(w http.ResponseWriter, r *http.Request) {
-	queryValues := r.URL.Query()
-	date := getTimestampFromDateDay(queryValues.Get("date"))
+	vars := mux.Vars(r)
+	date := getTimestampFromDateDay(vars["date"])
 	if date < 0 {
 		fmt.Fprint(w, "Vous devez renseigner le paramètre date pour effectuer la requête. Il doit être au format YYYY-MM-DD")
 		return
