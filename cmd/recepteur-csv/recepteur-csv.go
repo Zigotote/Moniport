@@ -14,7 +14,7 @@ import (
 	mymqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-var path_csv_dir = filepath.Join("Moniport", "cmd", "csv-files") + string(os.PathSeparator)
+var path_csv_dir = filepath.Join("src", "moniport", "cmd", "csv-files") + string(os.PathSeparator)
 
 func main() {
 
@@ -63,7 +63,11 @@ func openFile(file_path string) *os.File {
 }
 
 func writeMeasure(m data.Measure) {
-	file := openFile(os.Getenv("GOPATH") + string(os.PathSeparator) + path_csv_dir + m.IDAirport + "-" + m.Date[0:10] + "-" + strings.ToUpper(m.MeasureType) + ".csv")
+
+	csvDir := os.Getenv("GOPATH") + string(os.PathSeparator) + path_csv_dir
+
+	os.MkdirAll(csvDir, 0700)
+	file := openFile(csvDir + m.IDAirport + "-" + m.Date[0:10] + "-" + strings.ToUpper(m.MeasureType) + ".csv")
 	defer file.Close()
 
 	writer := csv.NewWriter(file)
