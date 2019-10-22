@@ -11,14 +11,25 @@ type entry struct {
 	Done bool
 }
 
-type Person struct {
+type person struct {
 	UserName string
 }
 
+type Aeroport struct {
+	Name string
+	id   string
+}
+type datas struct {
+	Aeroports []Aeroport
+}
+
 func templateHandeler(w http.ResponseWriter, r *http.Request) {
-	p := Person{UserName: "toto"}
-	t := template.Must(template.ParseFiles("tmpl/test.html"))
-	fmt.Println(t.Execute(w, p))
+	data := datas{Aeroports: []Aeroport{
+		{Name: "Nantes", id: "NAN"},
+		{Name: "Londres", id: "LND"},
+	}}
+	t := template.Must(template.ParseFiles("tmpl/pageAcceuil.html", "tmpl/css/theme.css"))
+	fmt.Println(t.Execute(w, data))
 }
 
 func main() {

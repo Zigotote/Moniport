@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" type="css/theme.css" href="css/theme.css">
+    <title>Document</title>
+    <style>
+      header {
+        width: 100vw;
+        text-align: center;
+        height: 17vh;
+      }
+      #main{
+        width: 100vw;
+        text-align: center;
+        height : 70vh;
+      }
+      footer {
+        width: 100vw;
+        text-align: center;
+        height: 5vh;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Bienvenu sur Moniport</h1>
+      <h2>Selectionnez un Aéroport</h2>
+    </header>
+    <div id="main">
+        <ul>
+          {{range .Aeroports}}
+          <li>{{.Name}}</li>
+          {{end}}
+        </ul>
+    </div>
+    
+    <footer>
+      <p>
+        Projet de Midelware en FIL A2 
+        <br>- octobre 2019 -
+      </p>
+    </footer>
+  </body>
+</html>
