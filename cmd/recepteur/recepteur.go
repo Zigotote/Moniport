@@ -2,12 +2,12 @@ package main
 
 import (
 	data "Moniport/internal/data"
+	"Moniport/internal/helpers/date"
 	mqtt "Moniport/internal/helpers/mqtt"
 	redis "Moniport/internal/helpers/redis"
 	"encoding/json"
 	"fmt"
 	"log"
-	"time"
 
 	mymqtt "github.com/eclipse/paho.mqtt.golang"
 )
@@ -41,9 +41,9 @@ func sendMeasure(m data.Measure) {
 
 	setValue := fmt.Sprintf("%d_%.2f", getNewIdMeasure(), m.Value)
 
-	setTimestamp := getTimestampFromDate(m.Date)
+	setTimestamp := date.ParseDate(m.Date)
 
-	redis.AddToOrdSet(setKey, setValue, setTimestamp)
+	redis.AddToOrdSet(setKey, setValue, date.GetTimestampFromDate(setTimestamp))
 }
 
 func getNewIdMeasure() int {
@@ -54,16 +54,4 @@ func getNewIdMeasure() int {
 	}
 
 	return redis.GetDataInt("currIdMeasure")
-}
-
-func getTimestampFromDate(date string) int64 {
-	layout := "2006-01-02-15-04-05"
-
-	t, err := time.Parse(layout, date)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	return t.Unix()
 }
