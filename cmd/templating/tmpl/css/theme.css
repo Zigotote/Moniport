@@ -1,5 +1,19 @@
 header {
   width: 100vw;
   text-align: center;
-  background-color: aqua;
+  height: 17vh;
+}
+#main{
+  width: 100vw;
+  text-align: center;
+  height : 70vh;
+}
+footer {
+  width: 100vw;
+  text-align: center;
+  height: 5vh;
+}
+ul {
+  list-style-type: none;
+  padding: 0;
 }
