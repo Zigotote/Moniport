@@ -2,6 +2,7 @@ package main
 
 import (
 	data "Moniport/internal/data"
+	errorHandler "Moniport/internal/helpers/errorHandler"
 	mqtt "Moniport/internal/helpers/mqtt"
 	"encoding/csv"
 	"encoding/json"
@@ -34,9 +35,7 @@ var callbackFunction mymqtt.MessageHandler = func(client mymqtt.Client, msg mymq
 	newMeasure := data.Measure{}
 	err := json.Unmarshal(msg.Payload(), &newMeasure)
 	fmt.Println(newMeasure)
-	if err != nil {
-		log.Fatal(err)
-	}
+	errorHandler.CheckError(err)
 }
 
 func writeMeasure(m data.Measure) {
@@ -53,10 +52,7 @@ func writeMeasure(m data.Measure) {
 	line := []string{m.Date[10:], fmt.Sprintf("%f", m.Value)}
 
 	err := writer.Write(line)
-	if err != nil {
-		log.Fatal(err)
-	}
-
+	errorHandler.CheckError(err)
 	fmt.Println("Ecriture dans le fichier " + file.Name())
 }
 
@@ -66,9 +62,7 @@ func openFile(file_path string) *os.File {
 		fmt.Println("Création du fichier...")
 		f, err := os.Create(file_path)
 
-		if err != nil {
-			log.Fatal(err)
-		}
+		errorHandler.CheckError(err)
 		fmt.Println("fichier créé : " + f.Name())
 		f.Close()
 
@@ -78,15 +72,11 @@ func openFile(file_path string) *os.File {
 		line := []string{"Date", "Value"}
 
 		err = writer.Write(line)
-		if err != nil {
-			log.Fatal(err)
-		}
+		errorHandler.CheckError(err)
 	}
 
 	file, err := os.Open(file_path)
-	if err != nil {
-		log.Fatal(err)
-	}
+	errorHandler.CheckError(err)
 
 	return file
 }
