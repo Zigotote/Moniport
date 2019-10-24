@@ -39,13 +39,14 @@ func measureHandler(w http.ResponseWriter, r *http.Request) {
 
 func avgMeasureHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	date := date.ParseDate(vars["date"])
-	/*if date < 0 {
+	start := date.ParseDate(vars["date"] + "-00-00-00")
+	end := date.ParseDate(vars["date"] + "23-59-59")
+	if start.Year() == 1 {
 		fmt.Fprint(w, "Vous devez renseigner le paramètre date pour effectuer la requête. Il doit être au format YYYY-MM-DD")
 		return
-	}*/
-	date.AddDate(1, 1, 1)
-	//appel redis getAvgMeasures(date)
+	}
+	resp := measuresdata.GetMeasuresInRange()
+
 	temp := data.Measure{
 		Date:        "1571351477",
 		MeasureType: "temp",
