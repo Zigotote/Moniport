@@ -5,6 +5,7 @@ import (
 	"Moniport/internal/helpers/date"
 	"Moniport/internal/helpers/redis"
 	"Moniport/internal/measuresdata"
+	"Moniport/internal/measurestreatment"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -30,6 +31,7 @@ func measureHandler(w http.ResponseWriter, r *http.Request) {
 	start := date.ParseDate(vars["start"])
 	end := date.ParseDate(vars["end"])
 	if start.Year() == 1 || end.Year() == 1 {
+		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprint(w, "Vous devez renseigner les paramètres start et end pour effectuer la requête. Ils doivent être au format YYYY-MM-DD-hh-mm-ss.")
 		return
 	}
@@ -39,37 +41,27 @@ func measureHandler(w http.ResponseWriter, r *http.Request) {
 
 func avgMeasureHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
+	airport := vars["airport"]
 	start := date.ParseDate(vars["date"] + "-00-00-00")
-	end := date.ParseDate(vars["date"] + "23-59-59")
+	end := date.ParseDate(vars["date"] + "-23-59-59")
 	if start.Year() == 1 {
+		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprint(w, "Vous devez renseigner le paramètre date pour effectuer la requête. Il doit être au format YYYY-MM-DD")
 		return
 	}
-	resp := measuresdata.GetMeasuresInRange()
+	measureTypes := []data.MeasureType{data.PRESSURE, data.TEMPERATURE, data.WIND}
+	var resp [3]AvgMesure
 
-	temp := data.Measure{
-		Date:        "1571351477",
-		MeasureType: "temp",
-		Value:       12,
-		IDSensor:    "1",
-		IDAirport:   "NTE",
+	for i, m := range measureTypes {
+		values := measuresdata.GetMeasuresInRange(airport, m.String(), start, end)
+		if len(values) != 0 {
+			avg := AvgMesure{
+				MeasureType: m,
+				Value:       measuretreatement.GetAverageFromMeasures(values),
+			}
+			resp[i] = avg
+		}
 	}
-	wind := data.Measure{
-		Date:        "1571351477",
-		MeasureType: "wind",
-		Value:       80,
-		IDSensor:    "2",
-		IDAirport:   "NTE",
-	}
-	press := data.Measure{
-		Date:        "1571351477",
-		MeasureType: "press",
-		Value:       1200,
-		IDSensor:    "3",
-		IDAirport:   "NTE",
-	}
-	resp := []data.Measure{temp, wind, press}
-	//voir pour convertir les timestamp en dates
 	writeJSON(w, resp)
 }
 
@@ -81,4 +73,9 @@ func writeJSON(w http.ResponseWriter, data interface{}) {
 	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
+}
+
+type AvgMesure struct {
+	MeasureType data.MeasureType
+	Value       float64
 }
