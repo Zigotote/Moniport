@@ -3,12 +3,12 @@ package main
 import (
 	"Moniport/internal/data"
 	"Moniport/internal/helpers/date"
+	"Moniport/internal/helpers/errorHandler"
 	"Moniport/internal/helpers/redis"
 	"Moniport/internal/measuresdata"
 	"Moniport/internal/measurestreatment"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -20,7 +20,7 @@ func main() {
 	router.HandleFunc("/measures/{airport}/{measure}/{start}/{end}", measureHandler)
 	router.HandleFunc("/avg-measures/{airport}/{date}", avgMeasureHandler)
 	err := http.ListenAndServe(":8081", router)
-	log.Fatal(err)
+	errorHandler.CheckError(err)
 	defer redis.CloseConnection()
 }
 
