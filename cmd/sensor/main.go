@@ -1,6 +1,7 @@
 package main
 
 import (
+	"Moniport/internal/data"
 	"Moniport/internal/helpers/mqtt"
 	"encoding/json"
 	"flag"
@@ -12,14 +13,6 @@ import (
 	"time"
 )
 
-type configuration struct {
-	AdressBroker string `json:"adressBroker"`
-	PortBroker   int    `json:"portBroker"`
-	LevelQos     byte   `json:"levelQos"`
-	IDSensor     int    `json:"idSensor"`
-	IDAirport    string `json:"idAirport"`
-}
-
 func main() {
 	//Lecture de l'adresse du fichier de config => lancer "go run <adresse-main.go> -config <adresse-config.json>
 	configFilename := getArgConfig()
@@ -29,16 +22,16 @@ func main() {
 	config := readConfiguration(configFilename)
 	fmt.Println(config)
 
-	s1 := Sensor{
-		id:         config.IDSensor,
-		idAirport:  config.IDAirport,
-		measure:    getMeasureType(config.IDSensor),
-		mqttAdress: config.AdressBroker,
-		mqttPort:   config.PortBroker,
-		mqttQos:    config.LevelQos,
+	s1 := data.Sensor{
+		Id:         config.IDSensor,
+		IdAirport:  config.IDAirport,
+		Measure:    getMeasureType(config.IDSensor),
+		MqttAdress: config.AdressBroker,
+		MqttPort:   config.PortBroker,
+		MqttQos:    config.LevelQos,
 	}
-	mqttAdress := "tcp://" + s1.mqttAdress + ":" + strconv.Itoa(s1.mqttPort)
-	c1 := mqtt.Connect(mqttAdress, s1.idAirport+":"+strconv.Itoa(s1.id))
+	mqttAdress := "tcp://" + s1.MqttAdress + ":" + strconv.Itoa(s1.MqttPort)
+	c1 := mqtt.Connect(mqttAdress, s1.IdAirport+":"+strconv.Itoa(s1.Id))
 
 	for range time.Tick(10 * time.Second) {
 		fmt.Printf("Envoi message...")
@@ -46,7 +39,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		c1.Publish("airport_measures", s1.mqttQos, false, out)
+		c1.Publish("airport_measures", s1.MqttQos, false, out)
 	}
 }
 
@@ -57,9 +50,9 @@ func getArgConfig() string {
 	return configFilename
 }
 
-func readConfiguration(filename string) configuration {
+func readConfiguration(filename string) data.Configuration {
 
-	var _configuration configuration
+	var _configuration data.Configuration
 	//filename is the path to the json config file
 	file, err := os.Open(filename)
 	if err != nil {
@@ -79,15 +72,15 @@ func readConfiguration(filename string) configuration {
 	return _configuration
 }
 
-func getMeasureType(id int) Measure {
+func getMeasureType(id int) data.MeasureType {
 	switch id {
 	case 0:
-		return TEMPERATURE
+		return data.TEMPERATURE
 	case 1:
-		return PRESSURE
+		return data.PRESSURE
 	case 2:
-		return WIND
+		return data.WIND
 	default:
-		return TEMPERATURE
+		return data.TEMPERATURE
 	}
 }
