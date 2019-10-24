@@ -39,29 +39,6 @@ var callbackFunction mymqtt.MessageHandler = func(client mymqtt.Client, msg mymq
 	}
 }
 
-func openFile(file_path string) *os.File {
-
-	if _, err := os.Stat(file_path); os.IsNotExist(err) {
-		fmt.Println("Création du fichier...")
-		f, err := os.Create(file_path)
-
-		if err != nil {
-			log.Fatal(err)
-		}
-
-		fmt.Println("fichier créé : " + f.Name())
-		f.Close()
-
-	}
-
-	file, err := os.Open(file_path)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return file
-}
-
 func writeMeasure(m data.Measure) {
 
 	csvDir := os.Getenv("GOPATH") + string(os.PathSeparator) + path_csv_dir
@@ -79,4 +56,37 @@ func writeMeasure(m data.Measure) {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fmt.Println("Ecriture dans le fichier " + file.Name())
+}
+
+func openFile(file_path string) *os.File {
+
+	if _, err := os.Stat(file_path); os.IsNotExist(err) {
+		fmt.Println("Création du fichier...")
+		f, err := os.Create(file_path)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("fichier créé : " + f.Name())
+		f.Close()
+
+		writer := csv.NewWriter(f)
+		defer writer.Flush()
+
+		line := []string{"Date", "Value"}
+
+		err = writer.Write(line)
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+
+	file, err := os.Open(file_path)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return file
 }
