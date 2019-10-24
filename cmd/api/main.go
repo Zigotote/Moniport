@@ -4,7 +4,7 @@ import (
 	"Moniport/internal/data"
 	"Moniport/internal/helpers/date"
 	"Moniport/internal/helpers/redis"
-	"Moniport/internal/measuresrtrv"
+	"Moniport/internal/measuresdata"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -33,7 +33,7 @@ func measureHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Vous devez renseigner les paramètres start et end pour effectuer la requête. Ils doivent être au format YYYY-MM-DD-hh-mm-ss.")
 		return
 	}
-	resp := measuresrtrv.GetMeasures(airport, measure)
+	resp := measuresdata.GetMeasuresInRange(airport, measure, start, end)
 	writeJSON(w, resp)
 }
 
