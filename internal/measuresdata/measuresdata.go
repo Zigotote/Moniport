@@ -69,6 +69,7 @@ func getNewIdMeasure() int {
 	return redis.GetDataInt("currIdMeasure")
 }
 
+//a supprimer
 func getTimestampFromDate(date string) int64 {
 	layout := "2006-01-02-15-04-05"
 
