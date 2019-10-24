@@ -1,10 +1,10 @@
 package main
 
 import (
+	"Moniport/internal/helpers/errorHandler"
 	"Moniport/internal/helpers/mqtt"
 	"encoding/json"
 	"fmt"
-	"log"
 	"strconv"
 	"time"
 )
@@ -26,9 +26,7 @@ func main() {
 	for range time.Tick(10 * time.Second) {
 		fmt.Printf("Envoi message...")
 		out, err := json.Marshal(s1.GenerateMessage(time.Now()))
-		if err != nil {
-			log.Fatal(err)
-		}
+		errorHandler.CheckError(err)
 		c1.Publish("airport_measures", s1.mqttQos, false, out)
 	}
 }

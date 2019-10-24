@@ -2,11 +2,11 @@ package main
 
 import (
 	"Moniport/internal/data"
+	"Moniport/internal/helpers/errorHandler"
 	"encoding/json"
 	"flag"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"os"
 )
 
@@ -22,16 +22,12 @@ func readConfiguration(filename string) data.Configuration {
 	var _configuration data.Configuration
 	//filename is the path to the json config file
 	file, err := os.Open(filename)
-	if err != nil {
-		log.Fatal(err)
-	}
+	errorHandler.CheckError(err)
 
 	byteValue, _ := ioutil.ReadAll(file)
 	json.Unmarshal(byteValue, &_configuration)
 
-	if err != nil {
-		log.Fatal(err)
-	}
+	errorHandler.CheckError(err)
 
 	fmt.Println("file read")
 	return _configuration
