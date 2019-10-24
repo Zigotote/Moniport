@@ -26,10 +26,12 @@ func templateHandeler(w http.ResponseWriter, r *http.Request) {
 
 func airportHandeler(w http.ResponseWriter, r *http.Request) {
 	airport := strings.Replace(r.URL.Path, "/airport/", "", 1)
-	datas := data.AirportData{Airportname: airport}
+	airportIds := measuresrtrv.GetMeasures(airport, "temp")
+	fmt.Println(airportIds)
+	/*datas := data.AirportData{Airportname: airport}
 	t := template.Must(template.ParseFiles("tmpl/aeroportDetails.html"))
 
-	fmt.Println(t.Execute(w, datas))
+	fmt.Println(t.Execute(w, datas))*/
 }
 
 func main() {

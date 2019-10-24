@@ -10,4 +10,11 @@ type Datas struct {
 
 type AirportData struct {
 	Airportname string
+	AirportId   string
+	Times       []Time
+}
+
+type Time struct {
+	Timestamp string
+	Time      string
 }
