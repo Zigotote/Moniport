@@ -2,7 +2,7 @@ package measuretreatement
 
 import data "Moniport/internal/data"
 
-func getAverageFromMeasures(measures []data.Measure) float64 {
+func GetAverageFromMeasures(measures []data.Measure) float64 {
 	sum := .0
 
 	for _, measure := range measures {
