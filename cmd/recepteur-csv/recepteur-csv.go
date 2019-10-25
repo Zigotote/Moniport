@@ -14,7 +14,7 @@ import (
 	mymqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-var path_csv_dir = filepath.Join("src", "moniport", "cmd", "csv-files") + string(os.PathSeparator)
+var path_csv_dir = filepath.Join("src", "moniport", "ressources", "csv-files") + string(os.PathSeparator)
 
 func main() {
 
