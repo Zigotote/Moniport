@@ -4,9 +4,10 @@ Initiation project to GO and MQTT
 
 # Lancement du projet
 
-mosquitto -v
-./run.sh
+Commandes à exécuter :
 
-Correspond au lancement de mosquitto et du script lançant les capteurs et le récepteur.
+- mosquitto -v
+- Lancer l'exécutable redis-server.exe
+- ./run.sh <param> (donner le chemin d'accès au dossier Moniport. Si aucun argument n'est donné la variable \$GOPATH est utilisée)
 
 :warning: Penser à arrêter les processus une fois le test terminé (ps + kill nbProcess) :skull_and_crossbones:
