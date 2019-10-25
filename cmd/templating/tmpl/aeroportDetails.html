@@ -14,13 +14,15 @@
     </header>
     <div id="main">
       <div id="rangeSelect">
-        <select id="">
-            {{range .Times}}
-              <option>{{.Time}}</option>
-            {{end}}
+        <select id="" onChange="dataChange">
+          {{range.Types}}
+          <option>{{.}}</option>
+          {{end}}
         </select>
-
+        <input type="datetime-local" id="start" name="range_start" value={{.Startime}} />
+        <input type="datetime-local" id="end" name="range_end" value="2018-07-22" />
       </div>
+      <input type="date" id="date" name="selected_date" value="2018-07-22" />
       <canvas id="myChart" width="400" height="400"></canvas>
     </div>
 
@@ -31,7 +33,24 @@
       </p>
     </footer>
   </body>
+
   <script>
+    function dataChange() {
+      var e = document.getElementById("nextBatch");
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4 && xhr.status == 200) {
+          e.outerHTML = xhr.responseText;
+        }
+      };
+      xhr.open("GET", "/airport/{{.AirportId}}", true);
+      try {
+        xhr.send();
+      } catch (err) {
+        /* handle error */
+      }
+    }
+
     var ctx = document.getElementById("myChart").getContext("2d");
     var myChart = new Chart(ctx, {
       type: "bar",
