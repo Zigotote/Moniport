@@ -1,4 +1,10 @@
-repo=$GOPATH/src/Moniport
+if [ $# -eq 0 ] 
+then
+    repo=$GOPATH
+else 
+    repo=$1
+fi
+repo=$repo/src/Moniport 
 
 # Build tous les fichier Go du dossier internal/
 for dir in $(find internal/* -type d)
@@ -18,6 +24,8 @@ do
     fi
 done
 
+# DOC POUR LANCER DANS UN NOUVEAU TERMINAL
+# https://askubuntu.com/questions/484993/run-command-on-anothernew-terminal-window
 # Lancement des programmes du dossier cmd/
 cd $repo/cmd
 
