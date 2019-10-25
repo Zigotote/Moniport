@@ -33,26 +33,26 @@ func readConfiguration(filename string) data.Configuration {
 	return _configuration
 }
 
-func generateSensorFromConfig(config data.Configuration) Sensor {
-	return Sensor{
-		id:         config.IDSensor,
-		idAirport:  config.IDAirport,
-		measure:    getMeasureType(config.IDSensor),
-		mqttAdress: config.AdressBroker,
-		mqttPort:   config.PortBroker,
-		mqttQos:    config.LevelQos,
+func generateSensorFromConfig(config data.Configuration) data.Sensor {
+	return data.Sensor{
+		Id:         config.IDSensor,
+		IdAirport:  config.IDAirport,
+		Measure:    getMeasureType(config.IDSensor),
+		MqttAdress: config.AdressBroker,
+		MqttPort:   config.PortBroker,
+		MqttQos:    config.LevelQos,
 	}
 }
 
-func getMeasureType(id int) Measure {
+func getMeasureType(id int) data.MeasureType {
 	switch id {
 	case 0:
-		return TEMPERATURE
+		return data.TEMPERATURE
 	case 1:
-		return PRESSURE
+		return data.PRESSURE
 	case 2:
-		return WIND
+		return data.WIND
 	default:
-		return TEMPERATURE
+		return data.TEMPERATURE
 	}
 }
