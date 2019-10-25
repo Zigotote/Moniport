@@ -2,11 +2,11 @@ package main
 
 import (
 	data "Moniport/internal/data"
+	"Moniport/internal/helpers/errorHandler"
 	mqtt "Moniport/internal/helpers/mqtt"
 	redis "Moniport/internal/helpers/redis"
 	"encoding/json"
 	"fmt"
-	"log"
 	"time"
 
 	mymqtt "github.com/eclipse/paho.mqtt.golang"
