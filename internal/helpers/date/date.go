@@ -17,6 +17,18 @@ func ParseDate(date string) time.Time {
 	return t
 }
 
+func ParseHTMLDate(date string) time.Time {
+	layout := "2006-01-02T15:04"
+
+	t, err := time.Parse(layout, date)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	return t
+}
+
 func GetTimestampFromDate(date time.Time) int64 {
 	return date.Unix()
 }

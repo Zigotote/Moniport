@@ -14,16 +14,29 @@
     </header>
     <div id="main">
       <div id="rangeSelect">
-        <select id="" onChange="dataChange()">
+        <select id="measureType" onChange="dataChange()">
           {{range.Types}}
-          <option>{{.}}</option>
+          <option>{{.}} </option>
           {{end}}
         </select>
-        <input type="datetime-local" id="start" name="range_start" value={{.Startime}} />
-        <input type="datetime-local" id="end" name="range_end" value="2018-07-22" />
+        <input type="datetime-local" id="start" name="range_start" value={{.Startime}} onChange="dataChange()"/>
+        <input type="datetime-local" id="end" name="range_end" value={{.EndTime}} onChange="dataChange()"/>
+        {{if .Graph1Error}}
+          <p>Pas de données disponible pour le capteur {{.SelectedType}} entre les dates selectionnées</p>
+        {{else}}
+          <canvas id="chartOne" width="400" height="400"></canvas>
+        {{end}}
       </div>
-      <input type="date" id="date" name="selected_date" value="2018-07-22" />
-      <canvas id="myChart" width="400" height="400"></canvas>
+      <div>
+          <input type="date" id="date" name="selected_date" value={{.Date}} onChange="dataChange()"/>
+          {{if .Graph1Error}}
+          <p>Pas de données disponible entre la date selectionnée</p>
+          {{else}}
+            <canvas id="chartTwo" width="400" height="400"></canvas>
+          {{end}}
+
+      </div>
+      
     </div>
 
     <footer>
@@ -37,48 +50,40 @@
   <script>
     function dataChange() {
       /*Relode with new values*/
+      measureType = document.getElementById("measureType").value;
+      startDate = document.getElementById("start").value;
+      endDate = document.getElementById("end").value;
+      selectedDate = document.getElementById("date").value;
+      window.location.href = "/airport/{{.AirportId}}/"+measureType+"/"+startDate+"/"+endDate+"/"+selectedDate;
     }
-
-    var ctx = document.getElementById("myChart").getContext("2d");
-    var myChart = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-        datasets: [
+    var ctx = document.getElementById("chartOne").getContext("2d");
+    var chartOne = new Chart(ctx, {
+      type: "line",
+      data:{
+        labels: {{.GraphDates}},
+        datasets : [
           {
-            label: "# of Votes",
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-              "rgba(255, 99, 132, 0.2)",
-              "rgba(54, 162, 235, 0.2)",
-              "rgba(255, 206, 86, 0.2)",
-              "rgba(75, 192, 192, 0.2)",
-              "rgba(153, 102, 255, 0.2)",
-              "rgba(255, 159, 64, 0.2)"
-            ],
-            borderColor: [
-              "rgba(255, 99, 132, 1)",
-              "rgba(54, 162, 235, 1)",
-              "rgba(255, 206, 86, 1)",
-              "rgba(75, 192, 192, 1)",
-              "rgba(153, 102, 255, 1)",
-              "rgba(255, 159, 64, 1)"
-            ],
-            borderWidth: 1
+            label: {{.SelectedType}},
+            data: {{.GraphData}},
           }
         ]
       },
-      options: {
-        scales: {
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: true
-              }
-            }
-          ]
-        }
-      }
     });
+
+    var ctx = document.getElementById("chartTwo").getContext("2d");
+    var chartTwo = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: {{.Types}},
+        datasets: [
+          {
+            label: "Moyennes",
+            data: {{.Moyennes}},
+            
+          }
+        ]
+      },
+    });
+
   </script>
 </html>

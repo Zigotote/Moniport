@@ -8,23 +8,19 @@ type Datas struct {
 	Aeroports []Aeroport
 }
 
-const (
-	TEMPERATURE = "temp"
-	PRESSURE    = "press"
-	WIND        = "wind"
-)
-
 type AirportData struct {
-	Airportname string
-	AirportId   string
-	Times       []Time
-	Types       []string
-	Startime    string
-	EndTime     string
-	Date        string
-	Graph1Error bool
-	Graph2Error bool
-	Moyennes    []int
+	Airportname  string
+	AirportId    string
+	Types        []MeasureType
+	Startime     string
+	EndTime      string
+	GraphData    []int
+	GraphDates   []string
+	SelectedType string
+	Date         string
+	Graph1Error  bool
+	Graph2Error  bool
+	Moyennes     [3]int
 }
 
 type Time struct {
