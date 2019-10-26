@@ -24,12 +24,11 @@ func readConfiguration(filename string) data.Configuration {
 	file, err := os.Open(filename)
 	errorHandler.CheckError(err)
 
-	byteValue, _ := ioutil.ReadAll(file)
+	byteValue, err := ioutil.ReadAll(file)
+	errorHandler.CheckError(err)
 	json.Unmarshal(byteValue, &_configuration)
 
-	errorHandler.CheckError(err)
-
-	fmt.Println("file read")
+	fmt.Println("file read, configuration : ", _configuration)
 	return _configuration
 }
 
