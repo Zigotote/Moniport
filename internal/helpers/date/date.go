@@ -33,10 +33,8 @@ func GetTimestampFromDate(date time.Time) int64 {
 	return date.Unix()
 }
 
-func GetDateFromTimestamp(date int64) string {
-	layout := "2006-01-02-15-04-05"
-
-	return time.Unix(date, 0).Format(layout)
+func GetDateFromTimestamp(date int64) time.Time {
+	return time.Unix(date, 0).UTC()
 }
 
 func GetStringFromDate(date time.Time) string {
