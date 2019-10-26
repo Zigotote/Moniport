@@ -24,6 +24,7 @@ type AirportData struct {
 	Date        string
 	Graph1Error bool
 	Graph2Error bool
+	Moyennes    []int
 }
 
 type Time struct {

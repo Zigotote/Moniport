@@ -14,7 +14,7 @@
     </header>
     <div id="main">
       <div id="rangeSelect">
-        <select id="" onChange="dataChange">
+        <select id="" onChange="dataChange()">
           {{range.Types}}
           <option>{{.}}</option>
           {{end}}
@@ -36,19 +36,7 @@
 
   <script>
     function dataChange() {
-      var e = document.getElementById("nextBatch");
-      var xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function() {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-          e.outerHTML = xhr.responseText;
-        }
-      };
-      xhr.open("GET", "/airport/{{.AirportId}}", true);
-      try {
-        xhr.send();
-      } catch (err) {
-        /* handle error */
-      }
+      /*Relode with new values*/
     }
 
     var ctx = document.getElementById("myChart").getContext("2d");
