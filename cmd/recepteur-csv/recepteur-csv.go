@@ -31,6 +31,8 @@ var callbackFunction mymqtt.MessageHandler = func(client mymqtt.Client, msg mymq
 	err := json.Unmarshal(msg.Payload(), &newMeasure)
 	fmt.Println(newMeasure)
 	errorHandler.CheckError(err)
+
+	writeMeasure(newMeasure)
 }
 
 func writeMeasure(m data.Measure) {
