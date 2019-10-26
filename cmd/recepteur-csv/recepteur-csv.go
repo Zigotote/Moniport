@@ -14,7 +14,7 @@ import (
 	mymqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-var path_csv_dir = filepath.Join("src", "moniport", "cmd", "csv-files") + string(os.PathSeparator)
+var path_csv_dir = filepath.Join("src", "moniport", "ressources", "csv-files") + string(os.PathSeparator)
 
 func main() {
 
@@ -31,6 +31,8 @@ var callbackFunction mymqtt.MessageHandler = func(client mymqtt.Client, msg mymq
 	err := json.Unmarshal(msg.Payload(), &newMeasure)
 	fmt.Println(newMeasure)
 	errorHandler.CheckError(err)
+
+	writeMeasure(newMeasure)
 }
 
 func writeMeasure(m data.Measure) {
