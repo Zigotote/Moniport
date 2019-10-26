@@ -23,6 +23,7 @@ func readConfiguration(filename string) data.Configuration {
 	//filename is the path to the json config file
 	file, err := os.Open(filename)
 	errorHandler.CheckError(err)
+	defer file.Close()
 
 	byteValue, err := ioutil.ReadAll(file)
 	errorHandler.CheckError(err)
