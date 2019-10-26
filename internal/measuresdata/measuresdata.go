@@ -2,7 +2,8 @@ package measuresdata
 
 import (
 	data "Moniport/internal/data"
-	redis "Moniport/internal/helpers/redis"
+	"Moniport/internal/helpers/date"
+	"Moniport/internal/helpers/redis"
 	"fmt"
 	"strconv"
 	"strings"
@@ -40,7 +41,7 @@ func parseMeasures(airport string, measureType string, measures map[int64]string
 			IDAirport:   airport,
 			MeasureType: measureType,
 			Value:       value,
-			Date:        data.MeasureDateFromTimestamp(key),
+			Date:        date.GetDateFromTimestamp(key),
 		}
 		parsedMeasures = append(parsedMeasures, measure)
 	}
@@ -54,9 +55,9 @@ func SendMeasure(m data.Measure) {
 
 	setValue := fmt.Sprintf("%d_%.2f", getNewIdMeasure(), m.Value)
 
-	setTimestamp := getTimestampFromDate(m.Date)
+	setTimestamp := date.ParseDate(m.Date)
 
-	redis.AddToOrdSet(setKey, setValue, setTimestamp)
+	redis.AddToOrdSet(setKey, setValue, date.GetTimestampFromDate(setTimestamp))
 }
 
 func getNewIdMeasure() int {
@@ -67,17 +68,4 @@ func getNewIdMeasure() int {
 	}
 
 	return redis.GetDataInt("currIdMeasure")
-}
-
-//a supprimer
-func getTimestampFromDate(date string) int64 {
-	layout := "2006-01-02-15-04-05"
-
-	t, err := time.Parse(layout, date)
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	return t.Unix()
 }
