@@ -31,32 +31,40 @@ cd $repo/cmd
 
 # Récepteur
 
-cd recepteur
-go build 
-if [ ! $? -eq 0 ]
-then
-    echo "Erreur lors du build du dossier recepteur"
-    exit 1
-else
-    ./recepteur &
-    echo Lancement du récepteur sur le processus $!
+for dir in $(find * -type d)
+do
+    if [ $dir != "sensor" ]
+    then
+        cd $dir
+        go build 
+        if [ ! $? -eq 0 ]
+        then
+            echo Erreur lors du build du dossier $dir
+            exit 1
+        else
+        ./$dir &
+        echo Lancement de $dir sur le processus $! 
+        cd ..
+    fi
 fi
+
+done
 
 
 # Lancement des capteurs
 
-cd ../sensor
-go build Moniport/cmd/sensor
-cd ..
+cd sensor
+go build 
+cd ../../
 
 if [ ! $? -eq 0 ]
 then
     echo "Erreur lors du build du dossier sensor"
     exit 1
 else
-    for config in config-files/*.json 
+    for config in ressources/config-files/publishers-config/*.json 
     do
-        ./sensor/sensor -config $GOPATH/src/Moniport/cmd/$config &
+        ./cmd/sensor/sensor -config $GOPATH/src/Moniport/cmd/$config &
         echo Lancement du capteur configuré dans le fichier $config : processus $!
     done
 fi
