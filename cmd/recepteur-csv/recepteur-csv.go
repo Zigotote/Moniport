@@ -14,13 +14,9 @@ import (
 	mymqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-var path_csv_dir = filepath.Join("src", "moniport", "cmd", "csv-files") + string(os.PathSeparator)
+var path_csv_dir = filepath.Join("src", "moniport", "ressources", "csv-files") + string(os.PathSeparator)
 
 func main() {
-
-	var sampleMeasure data.Measure = data.Measure{"1", "NON", "wind", 50, "2019-12-10-15-10-25"}
-
-	writeMeasure(sampleMeasure)
 
 	client := mqtt.Connect("tcp://localhost:1883", "my-subscriber")
 	for true {
@@ -35,6 +31,8 @@ var callbackFunction mymqtt.MessageHandler = func(client mymqtt.Client, msg mymq
 	err := json.Unmarshal(msg.Payload(), &newMeasure)
 	fmt.Println(newMeasure)
 	errorHandler.CheckError(err)
+
+	writeMeasure(newMeasure)
 }
 
 func writeMeasure(m data.Measure) {
@@ -42,13 +40,14 @@ func writeMeasure(m data.Measure) {
 	csvDir := os.Getenv("GOPATH") + string(os.PathSeparator) + path_csv_dir
 
 	os.MkdirAll(csvDir, 0700)
+
 	file := openFile(csvDir + m.IDAirport + "-" + m.Date[0:10] + "-" + strings.ToUpper(m.MeasureType) + ".csv")
 	defer file.Close()
 
 	writer := csv.NewWriter(file)
 	defer writer.Flush()
 
-	line := []string{m.Date[10:], fmt.Sprintf("%f", m.Value)}
+	line := []string{strings.Replace(m.Date[11:], "-", ":", 2), fmt.Sprintf("%f", m.Value)}
 
 	err := writer.Write(line)
 	errorHandler.CheckError(err)
@@ -65,7 +64,10 @@ func openFile(file_path string) *os.File {
 		fmt.Println("fichier créé : " + f.Name())
 		f.Close()
 
-		writer := csv.NewWriter(f)
+		file, err := os.OpenFile(file_path, os.O_APPEND|os.O_WRONLY, 0666)
+		errorHandler.CheckError(err)
+
+		writer := csv.NewWriter(file)
 		defer writer.Flush()
 
 		line := []string{"Date", "Value"}
@@ -74,7 +76,7 @@ func openFile(file_path string) *os.File {
 		errorHandler.CheckError(err)
 	}
 
-	file, err := os.Open(file_path)
+	file, err := os.OpenFile(file_path, os.O_APPEND|os.O_WRONLY, 0666)
 	errorHandler.CheckError(err)
 
 	return file
