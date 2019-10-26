@@ -5,6 +5,7 @@ import (
 	"Moniport/internal/helpers/date"
 	"Moniport/internal/helpers/redis"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -45,6 +46,10 @@ func parseMeasures(airport string, measureType string, measures map[int64]string
 		}
 		parsedMeasures = append(parsedMeasures, measure)
 	}
+
+	sort.Slice(parsedMeasures, func(i, j int) bool {
+		return parsedMeasures[i].Date < parsedMeasures[j].Date
+	})
 	return parsedMeasures
 }
 
