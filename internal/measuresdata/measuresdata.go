@@ -3,7 +3,7 @@ package measuresdata
 import (
 	data "Moniport/internal/data"
 	"Moniport/internal/helpers/date"
-	redis "Moniport/internal/helpers/redis"
+	"Moniport/internal/helpers/redis"
 	"fmt"
 	"strconv"
 	"strings"
