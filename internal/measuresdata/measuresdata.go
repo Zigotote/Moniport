@@ -5,6 +5,7 @@ import (
 	"Moniport/internal/helpers/date"
 	"Moniport/internal/helpers/redis"
 	"fmt"
+	"sort"
 	"strconv"
 	"strings"
 	"time"
@@ -41,10 +42,14 @@ func parseMeasures(airport string, measureType string, measures map[int64]string
 			IDAirport:   airport,
 			MeasureType: measureType,
 			Value:       value,
-			Date:        date.GetDateFromTimestamp(key),
+			Date:        date.GetStringFromDate(date.GetDateFromTimestamp(key)),
 		}
 		parsedMeasures = append(parsedMeasures, measure)
 	}
+
+	sort.Slice(parsedMeasures, func(i, j int) bool {
+		return parsedMeasures[i].Date < parsedMeasures[j].Date
+	})
 	return parsedMeasures
 }
 
@@ -56,6 +61,8 @@ func SendMeasure(m data.Measure) {
 	setValue := fmt.Sprintf("%d_%.2f", getNewIdMeasure(), m.Value)
 
 	setTimestamp := date.ParseDate(m.Date)
+
+	fmt.Println(setTimestamp)
 
 	redis.AddToOrdSet(setKey, setValue, date.GetTimestampFromDate(setTimestamp))
 }
