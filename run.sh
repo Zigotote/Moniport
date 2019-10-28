@@ -1,10 +1,9 @@
 if [ $# -eq 0 ] 
 then
-    repo=$GOPATH
+    repo=$GOPATH/src/Moniport
 else 
     repo=$1
 fi
-repo=$repo/src/Moniport 
 
 # Build tous les fichier Go du dossier internal/
 for dir in $(find internal/* -type d)
@@ -29,33 +28,44 @@ done
 # Lancement des programmes du dossier cmd/
 cd $repo/cmd
 
-# Récepteur
-
-for dir in $(find * -type d)
+# Lancement d'api et recepteur-csv
+prog=( "recepteur-csv" "api" )
+for i in "${prog[@]}"
 do
-    if [ $dir != "sensor" ]
+    cd $i
+    ./$i &
+    if [ ! $? -eq 0 ]
     then
-        cd $dir
-        go build 
-        if [ ! $? -eq 0 ]
-        then
-            echo Erreur lors du build du dossier $dir
-            exit 1
-        else
-        ./$dir &
-        echo Lancement de $dir sur le processus $! 
-        cd ..
+        echo Erreur lors du build du dossier $i
+        exit 1
     fi
-fi
-
+    echo Lancement de $i : processus $!
+    cd ..
 done
 
+# Lancement des récepteurs
+
+airports=( "NTE" "BES" )
+cd recepteur
+go build
+
+if [ ! $? -eq 0 ]
+then
+    echo "Erreur lors du build du dossier recepteur"
+    exit 1
+else
+    for i in "${airports[@]}"
+    do
+        ./recepteur -config $i &
+        echo Lancement du récepteur de l aéroport de $i : processus $!
+    done
+fi
 
 # Lancement des capteurs
 
-cd sensor
+cd ../sensor
 go build 
-cd ../../
+cd ../..
 
 if [ ! $? -eq 0 ]
 then
@@ -64,7 +74,7 @@ then
 else
     for config in ressources/config-files/publishers-config/*.json 
     do
-        ./cmd/sensor/sensor -config $GOPATH/src/Moniport/cmd/$config &
+        ./cmd/sensor/sensor -config $repo/$config &
         echo Lancement du capteur configuré dans le fichier $config : processus $!
     done
 fi
