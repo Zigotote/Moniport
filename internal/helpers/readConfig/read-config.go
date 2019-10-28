@@ -1,4 +1,4 @@
-package main
+package readConfig
 
 import (
 	"Moniport/internal/data"
@@ -10,14 +10,14 @@ import (
 	"os"
 )
 
-func getArgConfig() string {
-	var configFilename string
-	flag.StringVar(&configFilename, "config", "", "Usage")
+func GetArgConfig() string {
+	var config string
+	flag.StringVar(&config, "config", "", "Usage")
 	flag.Parse()
-	return configFilename
+	return config
 }
 
-func readConfiguration(filename string) data.Configuration {
+func ReadConfigurationPublisher(filename string) data.Configuration {
 
 	var _configuration data.Configuration
 	//filename is the path to the json config file
@@ -33,18 +33,18 @@ func readConfiguration(filename string) data.Configuration {
 	return _configuration
 }
 
-func generateSensorFromConfig(config data.Configuration) data.Sensor {
+func GenerateSensorFromConfig(config data.Configuration) data.Sensor {
 	return data.Sensor{
 		Id:         config.IDSensor,
 		IdAirport:  config.IDAirport,
-		Measure:    getMeasureType(config.IDSensor),
+		Measure:    GetMeasureType(config.IDSensor),
 		MqttAdress: config.AdressBroker,
 		MqttPort:   config.PortBroker,
 		MqttQos:    config.LevelQos,
 	}
 }
 
-func getMeasureType(id int) data.MeasureType {
+func GetMeasureType(id int) data.MeasureType {
 	switch id {
 	case 0:
 		return data.TEMPERATURE
