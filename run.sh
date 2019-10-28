@@ -1,11 +1,11 @@
 if [ $# -eq 0 ] 
 then
-    repo=$GOPATH
+    repo=$GOPATH/src/Moniport
 else 
     repo=$1
 fi
-repo=$GOPATH
-repo=/home/lea/go/src/Moniport 
+
+#repo=/home/lea/go/src/Moniport 
 
 # Build tous les fichier Go du dossier internal/
 for dir in $(find internal/* -type d)
@@ -30,11 +30,11 @@ done
 # Lancement des programmes du dossier cmd/
 cd $repo/cmd
 
-# Récepteur
+# Lancement des main.go sans arguments
 
 for dir in $(find * -type d)
 do
-    if [ $dir != "sensor" ]
+    if [ $dir != "sensor" ] && [ $dir != templating/tmpl* ]
     then
         cd $dir
         go build 
@@ -65,7 +65,7 @@ then
 else
     for config in ressources/config-files/publishers-config/*.json 
     do
-        ./cmd/sensor/sensor -config /home/lea/go/src/Moniport/$config &
+        ./cmd/sensor/sensor -config $repo/$config &
         echo Lancement du capteur configuré dans le fichier $config : processus $!
     done
 fi
