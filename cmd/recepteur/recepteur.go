@@ -3,10 +3,10 @@ package main
 import (
 	data "Moniport/internal/data"
 	mqtt "Moniport/internal/helpers/mqtt"
+	"Moniport/internal/measuresdata"
 	"encoding/json"
 	"fmt"
 	"log"
-	"moniport/internal/measuresdata"
 
 	mymqtt "github.com/eclipse/paho.mqtt.golang"
 )

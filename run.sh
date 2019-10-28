@@ -4,7 +4,8 @@ then
 else 
     repo=$1
 fi
-repo=$repo/src/Moniport 
+repo=$GOPATH
+repo=/home/lea/go/src/Moniport 
 
 # Build tous les fichier Go du dossier internal/
 for dir in $(find internal/* -type d)
@@ -64,7 +65,7 @@ then
 else
     for config in ressources/config-files/publishers-config/*.json 
     do
-        ./cmd/sensor/sensor -config $GOPATH/src/Moniport/cmd/$config &
+        ./cmd/sensor/sensor -config /home/lea/go/src/Moniport/$config &
         echo Lancement du capteur configuré dans le fichier $config : processus $!
     done
 fi

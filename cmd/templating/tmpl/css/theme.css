@@ -3,10 +3,10 @@ header {
   text-align: center;
   height: 17vh;
 }
-#main{
+#main {
   width: 100vw;
   text-align: center;
-  height : 70vh;
+  height: auto;
 }
 footer {
   width: 100vw;

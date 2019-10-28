@@ -14,6 +14,7 @@
     </header>
     <div id="main">
       <div id="rangeSelect">
+        <h2>Données pour le capteur {{.SelectedType}} du {{.Startime}} au {{.EndTime}}</h2>
         <select id="measureType" onChange="dataChange()">
           {{range.Types}}
           <option>{{.}} </option>
@@ -24,15 +25,17 @@
         {{if .Graph1Error}}
           <p>Pas de données disponible pour le capteur {{.SelectedType}} entre les dates selectionnées</p>
         {{else}}
-          <canvas id="chartOne" width="400" height="400"></canvas>
+          <canvas id="chartOne" width="400" height="200"></canvas>
         {{end}}
       </div>
-      <div>
+      <hr>
+      <div id="averageSelect">
+          <h2>Moyennes des capteurs de {{.Airportname}} le {{.Date}}</h2>
           <input type="date" id="date" name="selected_date" value={{.Date}} onChange="dataChange()"/>
-          {{if .Graph1Error}}
+          {{if .Graph2Error}}
           <p>Pas de données disponible entre la date selectionnée</p>
           {{else}}
-            <canvas id="chartTwo" width="400" height="400"></canvas>
+            <canvas id="chartTwo" width="400" height="200"></canvas>
           {{end}}
 
       </div>
@@ -56,34 +59,40 @@
       selectedDate = document.getElementById("date").value;
       window.location.href = "/airport/{{.AirportId}}/"+measureType+"/"+startDate+"/"+endDate+"/"+selectedDate;
     }
-    var ctx = document.getElementById("chartOne").getContext("2d");
-    var chartOne = new Chart(ctx, {
-      type: "line",
-      data:{
-        labels: {{.GraphDates}},
-        datasets : [
-          {
-            label: {{.SelectedType}},
-            data: {{.GraphData}},
-          }
-        ]
-      },
-    });
+    if (document.getElementById("chartOne") != null) {
+      var ctx = document.getElementById("chartOne").getContext("2d");
+      var chartOne = new Chart(ctx, {
+        type: "line",
+        data:{
+          labels: {{.GraphDates}},
+          datasets : [
+            {
+              label: {{.SelectedType}},
+              data: {{.GraphData}},
+            }
+          ]
+        },
+      });
+    }
+    
+    if (document.getElementById("chartTwo") != null) {
+      var ctx = document.getElementById("chartTwo").getContext("2d");
+      var chartTwo = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: {{.Types}},
+          datasets: [
+            {
+              label: "Moyennes",
+              data: {{.Moyennes}},
+              
+            }
+          ]
+        },
+      });
 
-    var ctx = document.getElementById("chartTwo").getContext("2d");
-    var chartTwo = new Chart(ctx, {
-      type: "bar",
-      data: {
-        labels: {{.Types}},
-        datasets: [
-          {
-            label: "Moyennes",
-            data: {{.Moyennes}},
-            
-          }
-        ]
-      },
-    });
+    }
 
+    
   </script>
 </html>
