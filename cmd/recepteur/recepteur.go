@@ -3,6 +3,7 @@ package main
 import (
 	data "Moniport/internal/data"
 	mqtt "Moniport/internal/helpers/mqtt"
+	"Moniport/internal/helpers/readConfig"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -12,11 +13,14 @@ import (
 )
 
 func main() {
+	//Lecture de l'IdAirport donnée en argument => lancer "go run <adresse-recepteur.exe> -config <IdAirport>
+	topic := readConfig.GetArgConfig()
+
 	measuresdata.Connect()
 	// var sampleMeasure data.Measure = data.Measure{"1", "NON", "wind", 50, "2019-12-10-15-10-25"}
 	client := mqtt.Connect("tcp://localhost:1883", "my-subscriber")
 	for true {
-		client.Subscribe("airport_measures", 0, callbackFunction)
+		client.Subscribe(topic, 0, callbackFunction)
 	}
 	defer measuresdata.Disconnect()
 }
