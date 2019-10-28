@@ -48,20 +48,14 @@ func getValuesfromArgs(args []string) (string, string, time.Time, time.Time, str
 	endTimeStamp := time.Now()
 	startDate := "2019-10-16T07:30"
 	endDate := "2019-10-17T19:30"
-	selectedDate := "2019-10-16"
+	selectedDate := "2019-10-17"
 
 	if len(args) > 2 {
 		mesureType = args[1]
-	}
-	if len(args) > 3 {
 		startTimeStamp = date.ParseHTMLDate(args[2])
 		startDate = args[2]
-	}
-	if len(args) > 4 {
 		endTimeStamp = date.ParseHTMLDate(args[3])
 		endDate = args[3]
-	}
-	if len(args) > 5 {
 		selectedDate = args[4]
 	}
 

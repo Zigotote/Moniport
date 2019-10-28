@@ -1,12 +1,23 @@
+body {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+}
 header {
   width: 100vw;
   text-align: center;
-  height: 17vh;
+  height: 20vh;
+}
+h1 {
+  background-color: #353c44;
+  margin: 0;
+  padding: 20px;
+  color: white;
 }
 #main {
   width: 100vw;
   text-align: center;
   height: auto;
+  min-height: 70vh;
+  display: table;
 }
 footer {
   width: 100vw;
@@ -16,4 +27,17 @@ footer {
 ul {
   list-style-type: none;
   padding: 0;
+  min-width: 50px;
+}
+
+li {
+  display: inline;
+  padding: 25px;
+  border: 1px solid darkgrey;
+  background-color: lightgrey;
+}
+
+a {
+  color: black;
+  text-decoration: none;
 }
