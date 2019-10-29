@@ -29,10 +29,11 @@ done
 cd $repo/cmd
 
 # Lancement d'api et recepteur-csv
-prog=( "recepteur-csv" "api" )
+prog=( "recepteur-csv" "api" "templating" )
 for i in "${prog[@]}"
 do
     cd $i
+    go build
     ./$i &
     if [ ! $? -eq 0 ]
     then
