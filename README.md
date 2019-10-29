@@ -16,13 +16,13 @@ Commandes à exécuter :
 
 Une API permet de visulaiser les données enregistrées sur le base REDIS. Deux requêtes sont disponibles :
 * Visualisation des données d'un capteur entre deux bornes de temps : http://localhost:8080/measures/{airport}/{sensor}/{start}/{end} 
-** Airport = code IATA de l'aérport (par exemple NTE ou BES)
-** Sensor = type de capteur dont on veut les données (temp, press ou wind)
-** Start = date de début de récupération des données, au format "YYYY-MM-DD-hh-mm-ss"
-** End = date de fin de récupération des données, au format "YYYY-MM-DD-hh-mm-ss"
+ * Airport = code IATA de l'aérport (par exemple NTE ou BES)
+ * Sensor = type de capteur dont on veut les données (temp, press ou wind)
+ * Start = date de début de récupération des données, au format "YYYY-MM-DD-hh-mm-ss"
+ * End = date de fin de récupération des données, au format "YYYY-MM-DD-hh-mm-ss"
 * Visualisation de la moyenne des données enregistrées sur une journée dans un aéroport : http://localhost:8080/avg-measures/{airport}/{date}
-** Airport = code IATA de l'aérport (par exemple NTE ou BES)
-** Date = jour pour lequel on souhaite connaître les moyennes des valeurs, au format "YYYY-MM-DD"
+ * Airport = code IATA de l'aérport (par exemple NTE ou BES)
+ * Date = jour pour lequel on souhaite connaître les moyennes des valeurs, au format "YYYY-MM-DD"
 
 # Visualisation des données
 
