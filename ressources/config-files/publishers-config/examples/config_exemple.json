@@ -1,0 +1,7 @@
+{
+  "adressBroker": "localhost",
+  "portBroker": 1883,
+  "levelQos": 1,
+  "idSensor": 2, 
+  "idAirport": "NTE"
+}
