@@ -1,6 +1,6 @@
 if [ $# -eq 0 ] 
 then
-    repo=/home/lea/go/src/Moniport
+    repo=$GOPATH/src/Moniport
 else 
     repo=$1
 fi
