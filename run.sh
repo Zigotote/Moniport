@@ -33,6 +33,7 @@ prog=( "recepteur-csv" "api" "templating" )
 for i in "${prog[@]}"
 do
     cd $i
+    go build
     ./$i &
     if [ ! $? -eq 0 ]
     then
