@@ -5,8 +5,6 @@ else
     repo=$1
 fi
 
-#repo=/home/lea/go/src/Moniport 
-
 # Build tous les fichier Go du dossier internal/
 for dir in $(find internal/* -type d)
 do
@@ -30,33 +28,44 @@ done
 # Lancement des programmes du dossier cmd/
 cd $repo/cmd
 
-# Lancement des main.go sans arguments
-
-for dir in $(find * -type d)
+# Lancement d'api et recepteur-csv
+prog=( "recepteur-csv" "api" "templating" )
+for i in "${prog[@]}"
 do
-    if [ $dir != "sensor" ] && [ $dir != templating/tmpl* ]
+    cd $i
+    ./$i &
+    if [ ! $? -eq 0 ]
     then
-        cd $dir
-        go build 
-        if [ ! $? -eq 0 ]
-        then
-            echo Erreur lors du build du dossier $dir
-            exit 1
-        else
-        ./$dir &
-        echo Lancement de $dir sur le processus $! 
-        cd ..
+        echo Erreur lors du build du dossier $i
+        exit 1
     fi
-fi
-
+    echo Lancement de $i : processus $!
+    cd ..
 done
 
+# Lancement des récepteurs
+
+airports=( "NTE" "BES" )
+cd recepteur
+go build
+
+if [ ! $? -eq 0 ]
+then
+    echo "Erreur lors du build du dossier recepteur"
+    exit 1
+else
+    for i in "${airports[@]}"
+    do
+        ./recepteur -config $i &
+        echo Lancement du récepteur de l aéroport de $i : processus $!
+    done
+fi
 
 # Lancement des capteurs
 
-cd sensor
+cd ../sensor
 go build 
-cd ../../
+cd ../..
 
 if [ ! $? -eq 0 ]
 then

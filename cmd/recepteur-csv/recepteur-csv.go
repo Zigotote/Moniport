@@ -4,6 +4,7 @@ import (
 	data "Moniport/internal/data"
 	errorHandler "Moniport/internal/helpers/errorHandler"
 	mqtt "Moniport/internal/helpers/mqtt"
+	"Moniport/internal/helpers/readConfig"
 	"encoding/csv"
 	"encoding/json"
 	"fmt"
@@ -17,10 +18,12 @@ import (
 var path_csv_dir = filepath.Join("src", "moniport", "ressources", "csv-files") + string(os.PathSeparator)
 
 func main() {
+	//Lecture de l'IdAirport donnée en argument => lancer "go run <adresse-recepteur.exe> -config <IdAirport>
+	topic := readConfig.GetArgConfig()
 
 	client := mqtt.Connect("tcp://localhost:1883", "my-subscriber")
 	for true {
-		client.Subscribe("airport_measures", 0, callbackFunction)
+		client.Subscribe(topic, 0, callbackFunction)
 	}
 }
 
