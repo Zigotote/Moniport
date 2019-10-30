@@ -28,8 +28,8 @@ done
 # Lancement des programmes du dossier cmd/
 cd $repo/cmd
 
-# Lancement d'api et recepteur-csv
-prog=( "recepteur-csv" "api" "templating" )
+# Lancement d'api et templating
+prog=( "api" "templating" )
 for i in "${prog[@]}"
 do
     cd $i
@@ -44,27 +44,32 @@ do
     cd ..
 done
 
-# Lancement des récepteurs
+# Lancement des récepteurs et recepteur-csv
 
+prog = ( "recepteur" "recepteur-csv" )
 airports=( "NTE" "BES" )
-cd recepteur
-go build
 
-if [ ! $? -eq 0 ]
-then
-    echo "Erreur lors du build du dossier recepteur"
-    exit 1
-else
-    for i in "${airports[@]}"
-    do
-        ./recepteur -config $i &
-        echo Lancement du récepteur de l aéroport de $i : processus $!
-    done
-fi
+for p in "${prog[@]}"
+do
+    cd $p
+    go build
+    if [ ! $? -eq 0 ]
+    then
+        echo Erreur lors du build du dossier $p
+        exit 1
+    else
+        for i in "${airports[@]}"
+        do
+            ./$p -config $i &
+            echo Lancement du $p de l aéroport de $i : processus $!
+        done
+    fi
+    cd ..
+done
 
 # Lancement des capteurs
 
-cd ../sensor
+cd sensor
 go build 
 cd ../..
 

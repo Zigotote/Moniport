@@ -15,7 +15,7 @@ import (
 	mymqtt "github.com/eclipse/paho.mqtt.golang"
 )
 
-var path_csv_dir = filepath.Join("src", "moniport", "ressources", "csv-files") + string(os.PathSeparator)
+var path_csv_dir = filepath.Join("src", "Moniport", "ressources", "csv-files") + string(os.PathSeparator)
 
 func main() {
 	//Lecture de l'IdAirport donnée en argument => lancer "go run <adresse-recepteur.exe> -config <IdAirport>
