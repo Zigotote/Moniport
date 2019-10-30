@@ -46,7 +46,7 @@ done
 
 # Lancement des récepteurs et recepteur-csv
 
-prog = ( "recepteur" "recepteur-csv" )
+prog=( "recepteur" "recepteur-csv" )
 airports=( "NTE" "BES" )
 
 for p in "${prog[@]}"
